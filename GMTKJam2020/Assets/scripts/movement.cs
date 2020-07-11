@@ -6,9 +6,7 @@ public class movement : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpd;
-    public float moveLimit;
-    public float maxMoveRight;
-    public float maxMoveLeft;
+    public bool leftBorder, rightBorder;
     [Header("Jumping")]
     public bool onGround;
     public float jSpd;
@@ -32,15 +30,13 @@ public class movement : MonoBehaviour
     }
     void move()
     {
-        if (Input.GetAxisRaw("Horizontal") == 1 && moveLimit < maxMoveRight) // if holding right
+        if (Input.GetAxisRaw("Horizontal") == 1 && !rightBorder) // if holding right, if not in right border
         {
-            moveLimit += 1; // adds 1 to the moveLimit every frame right is held (basically limits how far right char can go)
             transform.Translate(new Vector2(moveSpd * Time.deltaTime, 0)); // translate by moveSpd to the right
             transform.localScale = (new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z)); // sets char facing right
         }
-        if (Input.GetAxisRaw("Horizontal") == -1 && moveLimit > maxMoveLeft) // if holding left
+        if (Input.GetAxisRaw("Horizontal") == -1 && !leftBorder) // if holding left, if not in left border
         {
-            moveLimit -= 1; // subtracts 1 from the moveLimit every frame left is held (basically limits how far left char can go)
             transform.Translate(new Vector2(-moveSpd * Time.deltaTime, 0)); // translate by moveSpd to the left
             transform.localScale = (new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z)); // sets char facing left
         }
@@ -68,6 +64,28 @@ public class movement : MonoBehaviour
         {
             gravScale = 1; // normal gravity
             jumpJuice = 30; // you are on ground so you have full juice
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "right border") // if you hit object with tag right border then you are in the right border
+        {
+            rightBorder = true;
+        }
+        if (other.tag == "left border") // if you hit object with tag left border then you are in the left border
+        {
+            leftBorder = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "right border") // when you exit the right border then right border is false
+        {
+            rightBorder = false;
+        }
+        if (other.tag == "left border") // when you exit the left border then left border is false
+        {
+            leftBorder = false;
         }
     }
 }
