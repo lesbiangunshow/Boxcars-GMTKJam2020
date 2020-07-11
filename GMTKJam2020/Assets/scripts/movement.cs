@@ -6,6 +6,7 @@ public class movement : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpd;
+    public bool leftBorder, rightBorder;
     [Header("Jumping")]
     public bool onGround;
     public float jSpd;
@@ -29,12 +30,12 @@ public class movement : MonoBehaviour
     }
     void move()
     {
-        if (Input.GetAxisRaw("Horizontal") == 1) // if holding right, if not in right border
+        if (Input.GetAxisRaw("Horizontal") == 1 && !rightBorder) // if holding right, if not in right border
         {
             transform.Translate(new Vector2(moveSpd * Time.deltaTime, 0)); // translate by moveSpd to the right
             transform.localScale = (new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z)); // sets char facing right
         }
-        if (Input.GetAxisRaw("Horizontal") == -1) // if holding left, if not in left border
+        if (Input.GetAxisRaw("Horizontal") == -1 && !leftBorder) // if holding left, if not in left border
         {
             transform.Translate(new Vector2(-moveSpd * Time.deltaTime, 0)); // translate by moveSpd to the left
             transform.localScale = (new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z)); // sets char facing left
@@ -63,6 +64,28 @@ public class movement : MonoBehaviour
         {
             gravScale = 1; // normal gravity
             jumpJuice = 30; // you are on ground so you have full juice
+        }
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "left border")
+        {
+            leftBorder = true;
+        }
+        if (collision.gameObject.tag == "right border")
+        {
+            rightBorder = true;
+        }
+    }
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "left border")
+        {
+            leftBorder = false;
+        }
+        if (collision.gameObject.tag == "right border")
+        {
+            rightBorder = false;
         }
     }
 }
