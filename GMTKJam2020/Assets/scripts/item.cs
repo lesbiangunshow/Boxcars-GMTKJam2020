@@ -25,5 +25,9 @@ public class item : MonoBehaviour
         {
             rb.velocity = new Vector3(xVelo, yHitGroundVelo, rb.velocity.z);
         }
+        if (collision.gameObject.tag == "ITEM DESTROYER")
+        {
+            Destroy(gameObject);
+        }
     }
 }
